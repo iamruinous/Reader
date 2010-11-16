@@ -44,9 +44,9 @@
 
 		UIScreen *mainScreen = [UIScreen mainScreen];
 
-		if ([mainScreen respondsToSelector:@selector(scale)])
-			screenScale = [mainScreen scale];
-		else
+//		if ([mainScreen respondsToSelector:@selector(scale)])
+//			screenScale = [mainScreen scale];
+//		else
 			screenScale = 1.0f;
 
 		CGRect screenBounds = [mainScreen bounds]; // Is in points

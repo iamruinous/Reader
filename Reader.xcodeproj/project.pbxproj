@@ -27,6 +27,7 @@
 		45DDE5E2122EDAE300292B47 /* PDFViewTiled.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DDE5E1122EDAE300292B47 /* PDFViewTiled.m */; };
 		45DDE5F3122EE23700292B47 /* PDFTiledLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DDE5F2122EE23700292B47 /* PDFTiledLayer.m */; };
 		45EFD9761236D8EA00AAE9B3 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 45EFD9751236D8EA00AAE9B3 /* README */; };
+		C0B65EF11291FDB600C2241E /* ReaderPDFContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = C0B65EF01291FDB600C2241E /* ReaderPDFContainer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,8 @@
 		45DDE5F2122EE23700292B47 /* PDFTiledLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFTiledLayer.m; path = Classes/PDFTiledLayer.m; sourceTree = "<group>"; };
 		45EFD9751236D8EA00AAE9B3 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Reader-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Reader-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		C0B65EEF1291FDB600C2241E /* ReaderPDFContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderPDFContainer.h; path = Classes/ReaderPDFContainer.h; sourceTree = "<group>"; };
+		C0B65EF01291FDB600C2241E /* ReaderPDFContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderPDFContainer.m; path = Classes/ReaderPDFContainer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +161,8 @@
 		450A670011D27B7900014BF5 /* Other Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C0B65EEF1291FDB600C2241E /* ReaderPDFContainer.h */,
+				C0B65EF01291FDB600C2241E /* ReaderPDFContainer.m */,
 				45DDE5E0122EDAE300292B47 /* PDFViewTiled.h */,
 				45DDE5E1122EDAE300292B47 /* PDFViewTiled.m */,
 				45DDE5F1122EE23700292B47 /* PDFTiledLayer.h */,
@@ -246,6 +251,7 @@
 				45DDE5F3122EE23700292B47 /* PDFTiledLayer.m in Sources */,
 				45B550DB12326A5500DAE92E /* CGPDFDocument.m in Sources */,
 				4514CE431235269700728CE2 /* UIViewFader.m in Sources */,
+				C0B65EF11291FDB600C2241E /* ReaderPDFContainer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +309,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos3.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -321,7 +327,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos3.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
