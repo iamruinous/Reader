@@ -1,5 +1,5 @@
 //
-//  ReaderPDFContainer.h
+//  PDFContainer.h
 //  Reader
 //
 //  Created by Integrum User on 11/15/10.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface ReaderPDFContainer : NSObject {
+@interface PDFContainer : NSObject {
 	NSURL *_fileURL;
 	NSString *_password;
 	CGPDFDocumentRef _PDFDocRef;
@@ -18,6 +18,7 @@
 @property (nonatomic, readonly) NSInteger pages;
 
 - (BOOL)changeFileURL:(NSURL *)fileURL password:(NSString *)password;
-
++ (id)sharedPDF;
+- (CGPDFPageRef)getPage:(NSInteger)pageNumber;
 
 @end

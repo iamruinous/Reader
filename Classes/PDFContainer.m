@@ -1,24 +1,24 @@
 //
-//  ReaderPDFContainer.m
+//  PDFContainer.m
 //  Reader
 //
 //  Created by Integrum User on 11/15/10.
 //  Copyright 2010 example.com. All rights reserved.
 //
 
-#import "ReaderPDFContainer.h"
+#import "PDFContainer.h"
 #import "CGPDFDocument.h"
 
-@implementation ReaderPDFContainer
+@implementation PDFContainer
 
 @synthesize pages;
 
-static ReaderPDFContainer *sharedPDF;
+static PDFContainer *sharedPDF;
 
-+(ReaderPDFContainer *)sharedPDF {
++(PDFContainer *)sharedPDF {
 	@synchronized(self){
 		if(!sharedPDF){
-			[[ReaderPDFContainer alloc] init];
+			[[PDFContainer alloc] init];
 		}
 	}
 	return sharedPDF;
@@ -30,6 +30,14 @@ static ReaderPDFContainer *sharedPDF;
 		sharedPDF = [super alloc];
 	}
 	return sharedPDF;
+}
+
+- (void)dealloc {
+    CGPDFDocumentRelease(_PDFDocRef);
+    [_fileURL release];
+    [_password release];
+    
+    [super dealloc];
 }
 
 - (BOOL)changeFileURL:(NSURL *)fileURL password:(NSString *)password
@@ -68,8 +76,11 @@ static ReaderPDFContainer *sharedPDF;
 	return status;
 }
 
-- (CGPDFDocumentRef)getPage:(NSInteger)pageNumber {
-    CGPDFDocumentRef newPDFPageRef = CGPDFDocumentGetPage(_PDFDocRef, pageNumber);
+- (CGPDFPageRef)getPage:(NSInteger)pageNumber {
+    if (pageNumber < 1) pageNumber = 1; // Check the lower page bounds
+    if (pageNumber > pages) pageNumber = pages; // Check the upper page bounds
+
+    CGPDFPageRef newPDFPageRef = CGPDFDocumentGetPage(_PDFDocRef, pageNumber);
     
     if (newPDFPageRef == NULL) // Check for non-NULL CGPDFPageRef
     {

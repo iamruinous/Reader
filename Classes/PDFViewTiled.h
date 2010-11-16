@@ -14,27 +14,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PDFViewTiled : UIView
+@interface PDFViewTiled : UIScrollView <UIScrollViewDelegate>
 {
 @private // Instance variables
-
-	NSURL *_fileURL;
-	NSString *_password;
-	CGPDFDocumentRef _PDFDocRef;
 	CGPDFPageRef _PDFPageRef;
 }
 
-@property (nonatomic, readonly) NSInteger page;
-@property (nonatomic, readonly) NSInteger pages;
+@property (nonatomic, assign) NSInteger page;
 
-- (id)initWithURL:(NSURL *)fileURL onPage:(NSInteger)onPage password:(NSString *)password frame:(CGRect)frame;
-
-- (BOOL)changeFileURL:(NSURL *)fileURL onPage:(NSInteger)onPage password:(NSString *)password;
-
-- (void)gotoPage:(NSInteger)newPage;
-
-- (void)decrementPage;
-- (void)incrementPage;
+- (id)initWithPage:(NSInteger)onPage frame:(CGRect)frame;
 
 - (void)willRotate;
 - (void)didRotate;

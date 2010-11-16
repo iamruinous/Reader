@@ -13,10 +13,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PDFViewController.h"
 
 @class PDFViewTiled, UIViewFader;
 
-@interface ReaderViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface ReaderViewController : PDFViewController
 {
 @private // Instance variables
 
@@ -27,9 +28,6 @@
 	UIToolbar *theToolbar;
 	UIViewFader *toolbarFader;
 	UILabel *theLabel;
-
-	UIScrollView *theScrollView;
-	PDFViewTiled *thePDFView;
 }
 
 @property (nonatomic, retain) NSURL *openURL;

@@ -15,6 +15,8 @@
 #import "ReaderViewController.h"
 #import "PDFViewTiled.h"
 #import "UIViewFader.h"
+#import "PDFContainer.h"
+#import "PDFViewController.h"
 
 @implementation ReaderViewController
 
@@ -72,27 +74,13 @@
 	UITapGestureRecognizer *tapGesture = nil;
 	UISwipeGestureRecognizer *swipeGesture = nil;
 
-	theScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-
-	theScrollView.scrollsToTop = NO;
-	theScrollView.showsVerticalScrollIndicator = NO;
-	theScrollView.showsHorizontalScrollIndicator = NO;
-	theScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	theScrollView.contentSize = self.view.bounds.size;
-	theScrollView.minimumZoomScale = MINIMUM_ZOOM_SCALE;
-	theScrollView.maximumZoomScale = MAXIMUM_ZOOM_SCALE;
-	theScrollView.directionalLockEnabled = YES;
-	theScrollView.delegate = self;
-
-	[self.view addSubview:theScrollView];
-
-	tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouchesOne:)];
-	tapGesture.cancelsTouchesInView = NO; tapGesture.delaysTouchesEnded = NO;
-	tapGesture.numberOfTouchesRequired = 1; // One finger single tap
-	tapGesture.numberOfTapsRequired = 1;
-	//tapGesture.delegate = self;
-	[self.view addGestureRecognizer:tapGesture];
-	[tapGesture release];
+//	tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouchesOne:)];
+//	tapGesture.cancelsTouchesInView = NO; tapGesture.delaysTouchesEnded = NO;
+//	tapGesture.numberOfTouchesRequired = 1; // One finger single tap
+//	tapGesture.numberOfTapsRequired = 1;
+//	//tapGesture.delegate = self;
+//	[self.view addGestureRecognizer:tapGesture];
+//	[tapGesture release];
 
 	tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouchesOne:)];
 	tapGesture.cancelsTouchesInView = NO; tapGesture.delaysTouchesEnded = NO;
@@ -110,19 +98,19 @@
 	[self.view addGestureRecognizer:tapGesture];
 	[tapGesture release];
 
-	swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleAllSwipes:)];
-	swipeGesture.cancelsTouchesInView = NO; swipeGesture.delaysTouchesEnded = NO;
-	swipeGesture.direction = UISwipeGestureRecognizerDirectionLeft; // ++page
-	swipeGesture.delegate = self;
-	[self.view addGestureRecognizer:swipeGesture];
-	[swipeGesture release];
-
-	swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleAllSwipes:)];
-	swipeGesture.cancelsTouchesInView = NO; swipeGesture.delaysTouchesEnded = NO;
-	swipeGesture.direction = UISwipeGestureRecognizerDirectionRight; // --page
-	swipeGesture.delegate = self;
-	[self.view addGestureRecognizer:swipeGesture];
-	[swipeGesture release];
+//	swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleAllSwipes:)];
+//	swipeGesture.cancelsTouchesInView = NO; swipeGesture.delaysTouchesEnded = NO;
+//	swipeGesture.direction = UISwipeGestureRecognizerDirectionLeft; // ++page
+//	swipeGesture.delegate = self;
+//	[self.view addGestureRecognizer:swipeGesture];
+//	[swipeGesture release];
+//
+//	swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleAllSwipes:)];
+//	swipeGesture.cancelsTouchesInView = NO; swipeGesture.delaysTouchesEnded = NO;
+//	swipeGesture.direction = UISwipeGestureRecognizerDirectionRight; // --page
+//	swipeGesture.delegate = self;
+//	[self.view addGestureRecognizer:swipeGesture];
+//	[swipeGesture release];
 
 	NSInteger page = 1; NSURL *fileURL = openURL;
 
@@ -133,12 +121,10 @@
 		page = [[NSUserDefaults standardUserDefaults] integerForKey:@"OnPage"];
 	}
 
-	thePDFView = [[PDFViewTiled alloc] initWithURL:fileURL onPage:page password:nil frame:theScrollView.bounds];
+    [[PDFContainer sharedPDF] changeFileURL:fileURL password:nil];
 
-	thePDFView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-	[theScrollView addSubview:thePDFView];
-
+    [self initPDFScroll];
+    
 	theToolbar = [UIToolbar new]; // Create the application toolbar
 
 	theToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -202,14 +188,15 @@
 
 	theSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	theSlider.minimumValue = 1.0f;
-	theSlider.maximumValue = [thePDFView pages];
-	theSlider.value = [thePDFView page];
+	theSlider.maximumValue = [[PDFContainer sharedPDF] pages];
+	theSlider.value = [[self currentlyDisplayedPage] page];
 
 	[theSlider addTarget:self action:@selector(sliderTouchDown:) forControlEvents:UIControlEventTouchDown];
 //	[theSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
 	[theSlider addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpInside];
 
 	[theNavbar addSubview:theSlider];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -251,15 +238,6 @@
 #endif
 
 	[super viewDidDisappear:animated];
-
-	if (openURL == nil) // Remember the last page only for the bundled PDF
-	{
-		NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-
-		[userDefaults setInteger:thePDFView.page forKey:@"OnPage"];
-
-		[userDefaults synchronize]; // Ensure defaults save
-	}
 }
 
 - (void)viewDidUnload
@@ -272,9 +250,7 @@
 
 	[navbarFader release], navbarFader = nil;
 	[toolbarFader release], toolbarFader = nil;
-	[theScrollView release], theScrollView = nil;
-	[thePDFView release], thePDFView = nil;
-	[theToolbar release], theToolbar = nil;
+    [theToolbar release], theToolbar = nil;
 	[theSlider release], theSlider = nil;
 	[theNavbar release], theNavbar = nil;
 	[theLabel release], theLabel = nil;
@@ -296,9 +272,9 @@
 	NSLog(@" -> self.view.bounds = %@", NSStringFromCGRect(self.view.bounds));
 #endif
 
-	theScrollView.zoomScale = NO_ZOOM_SCALE;
+	self.pagingScrollView.zoomScale = NO_ZOOM_SCALE;
 
-	[thePDFView willRotate];
+	[[self currentlyDisplayedPage] willRotate];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
@@ -318,7 +294,7 @@
 
 	//if (fromInterfaceOrientation == self.interfaceOrientation) return; // You get this when presented modally
 
-	[thePDFView didRotate];
+	[[self currentlyDisplayedPage] didRotate];
 }
 
 - (void)didReceiveMemoryWarning
@@ -339,8 +315,6 @@
 	[openURL release];
 	[navbarFader release];
 	[toolbarFader release];
-	[theScrollView release];
-	[thePDFView release];
 	[theToolbar release];
 	[theSlider release];
 	[theNavbar release];
@@ -349,30 +323,24 @@
 	[super dealloc];
 }
 
-#pragma mark UIScrollViewDelegate methods
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-	return thePDFView;
-}
 
 #pragma mark UIGestureRecognizer action methods
 
 - (void)handleAllSwipes:(UISwipeGestureRecognizer *)recognizer
 {
-	if (theNavbar.hidden && (theScrollView.zoomScale == NO_ZOOM_SCALE))
+	if (theNavbar.hidden && (self.pagingScrollView.zoomScale == NO_ZOOM_SCALE))
 	{
 		if (recognizer.direction & UISwipeGestureRecognizerDirectionLeft)
 		{
-			[thePDFView incrementPage];
-			theSlider.value = thePDFView.page;
+//			[thePDFView incrementPage];
+//			theSlider.value = thePDFView.page;
 			return;
 		}
 
 		if (recognizer.direction & UISwipeGestureRecognizerDirectionRight)
 		{
-			[thePDFView decrementPage];
-			theSlider.value = thePDFView.page;
+//			[thePDFView decrementPage];
+//			theSlider.value = thePDFView.page;
 			return;
 		}
 	}
@@ -394,8 +362,8 @@
 
 	if (CGRectContainsPoint(tapAreaRect, tapLocation))
 	{
-		[thePDFView incrementPage];
-		theSlider.value = thePDFView.page;
+//		[thePDFView incrementPage];
+//		theSlider.value = thePDFView.page;
 		return;
 	}
 
@@ -408,8 +376,8 @@
 
 	if (CGRectContainsPoint(tapAreaRect, tapLocation))
 	{
-		[thePDFView decrementPage];
-		theSlider.value = thePDFView.page;
+//		[thePDFView decrementPage];
+//		theSlider.value = thePDFView.page;
 		return;
 	}
 
@@ -425,18 +393,18 @@
 			[toolbarFader startViewFadeIn]; return;
 		}
 
-		if (thePDFView.pages > 1) // Document navigation (single tap)
-		{
-			tapAreaRect.origin.x = NAV_AREA_SIZE;
-			tapAreaRect.size.height = NAV_AREA_SIZE;
-			tapAreaRect.origin.y = viewBounds.size.height - NAV_AREA_SIZE;
-			tapAreaRect.size.width = viewBounds.size.width - (NAV_AREA_SIZE * 2);
-
-			if (CGRectContainsPoint(tapAreaRect, tapLocation))
-			{
-				[navbarFader startViewFadeIn]; return;
-			}
-		}
+//		if ([PDFContainer sharedPDF].pages > 1) // Document navigation (single tap)
+//		{
+//			tapAreaRect.origin.x = NAV_AREA_SIZE;
+//			tapAreaRect.size.height = NAV_AREA_SIZE;
+//			tapAreaRect.origin.y = viewBounds.size.height - NAV_AREA_SIZE;
+//			tapAreaRect.size.width = viewBounds.size.width - (NAV_AREA_SIZE * 2);
+//
+//			if (CGRectContainsPoint(tapAreaRect, tapLocation))
+//			{
+//				[navbarFader startViewFadeIn]; return;
+//			}
+//		}
 	}
 
 	if (numberOfTaps == 2)	// Zoom area handling (double tap)
@@ -445,13 +413,13 @@
 
 		if (CGRectContainsPoint(tapAreaRect, tapLocation))
 		{
-			CGFloat zoomScale = theScrollView.zoomScale;
+			CGFloat zoomScale = self.pagingScrollView.zoomScale;
 
 			if (zoomScale < MAXIMUM_ZOOM_SCALE) // Zoom in if below maximum zoom scale
 			{
 				zoomScale = ((zoomScale += ZOOM_AMOUNT) > MAXIMUM_ZOOM_SCALE) ? MAXIMUM_ZOOM_SCALE : zoomScale;
 
-				[theScrollView setZoomScale:zoomScale animated:YES];
+				[self.pagingScrollView setZoomScale:zoomScale animated:YES];
 			}
 		}
 	}
@@ -466,13 +434,13 @@
 
 	if (CGRectContainsPoint(tapAreaRect, tapLocation))
 	{
-		CGFloat zoomScale = theScrollView.zoomScale;
+		CGFloat zoomScale = self.pagingScrollView.zoomScale;
 
 		if (zoomScale > MINIMUM_ZOOM_SCALE) // Zoom out if above minimum zoom scale
 		{
 			zoomScale = ((zoomScale -= ZOOM_AMOUNT) < MINIMUM_ZOOM_SCALE) ? MINIMUM_ZOOM_SCALE : zoomScale;
 
-			[theScrollView setZoomScale:zoomScale animated:YES];
+			[self.pagingScrollView setZoomScale:zoomScale animated:YES];
 		}
 	}
 }
@@ -517,7 +485,7 @@
 {
 	if (slider.state == UIControlStateNormal)
 	{
-		[thePDFView gotoPage:slider.value];
+//		[thePDFView gotoPage:slider.value];
 
 		[navbarFader startFadeOutTimer];
 	}
