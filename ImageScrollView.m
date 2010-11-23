@@ -46,7 +46,7 @@
  */
 
 #import "ImageScrollView.h"
-#import "TilingView.h"
+#import "PDFViewTiled.h"
 
 @implementation ImageScrollView
 @synthesize index;
@@ -95,7 +95,7 @@
     
     imageView.frame = frameToCenter;
     
-    if ([imageView isKindOfClass:[TilingView class]]) {
+    if ([imageView isKindOfClass:[PDFViewTiled class]]) {
         // to handle the interaction between CATiledLayer and high resolution screens, we need to manually set the
         // tiling view's contentScaleFactor to 1.0. (If we omitted this, it would be 2.0 on high resolution screens,
         // which would cause the CATiledLayer to ask us for tiles of the wrong scales.)

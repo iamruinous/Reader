@@ -28,7 +28,6 @@
 		45DDE5F3122EE23700292B47 /* PDFTiledLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DDE5F2122EE23700292B47 /* PDFTiledLayer.m */; };
 		45EFD9761236D8EA00AAE9B3 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 45EFD9751236D8EA00AAE9B3 /* README */; };
 		BBC122D612924DB500435C0E /* PDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC122D512924DB500435C0E /* PDFViewController.m */; };
-		BBC125D71292E83000435C0E /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC125D61292E83000435C0E /* ImageScrollView.m */; };
 		C0B65EF11291FDB600C2241E /* PDFContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = C0B65EF01291FDB600C2241E /* PDFContainer.m */; };
 /* End PBXBuildFile section */
 
@@ -64,8 +63,6 @@
 		8D1107310486CEB800E47090 /* Reader-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Reader-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		BBC122D412924DB500435C0E /* PDFViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFViewController.h; sourceTree = "<group>"; };
 		BBC122D512924DB500435C0E /* PDFViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFViewController.m; sourceTree = "<group>"; };
-		BBC125D51292E83000435C0E /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
-		BBC125D61292E83000435C0E /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
 		C0B65EEF1291FDB600C2241E /* PDFContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFContainer.h; path = Classes/PDFContainer.h; sourceTree = "<group>"; };
 		C0B65EF01291FDB600C2241E /* PDFContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFContainer.m; path = Classes/PDFContainer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -167,8 +164,6 @@
 		450A670011D27B7900014BF5 /* Other Classes */ = {
 			isa = PBXGroup;
 			children = (
-				BBC125D51292E83000435C0E /* ImageScrollView.h */,
-				BBC125D61292E83000435C0E /* ImageScrollView.m */,
 				C0B65EEF1291FDB600C2241E /* PDFContainer.h */,
 				C0B65EF01291FDB600C2241E /* PDFContainer.m */,
 				45DDE5E0122EDAE300292B47 /* PDFViewTiled.h */,
@@ -263,7 +258,6 @@
 				4514CE431235269700728CE2 /* UIViewFader.m in Sources */,
 				C0B65EF11291FDB600C2241E /* PDFContainer.m in Sources */,
 				BBC122D612924DB500435C0E /* PDFViewController.m in Sources */,
-				BBC125D71292E83000435C0E /* ImageScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

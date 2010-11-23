@@ -180,9 +180,9 @@
     // add missing pages
     for (int index = firstNeededPageIndex; index <= lastNeededPageIndex; index++) {
         if (![self isDisplayingPageForIndex:index]) {
-            ImageScrollView *page = [self dequeueRecycledPage];
+            PDFViewTiled *page = [self dequeueRecycledPage];
             if (page == nil) {
-                page = [[[ImageScrollView alloc] initWithPage:index + 1 frame:[self frameForPageAtIndex:index]] autorelease];
+                page = [[[PDFViewTiled alloc] initWithPage:index + 1 frame:[self frameForPageAtIndex:index]] autorelease];
             }
             [pagingScrollView addSubview:page];
             [self setMaxMinZoomScalesForCurrentBounds];
