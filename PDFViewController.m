@@ -8,6 +8,7 @@
 
 #import "PDFViewController.h"
 #import "PDFViewTiled.h"
+#import "PDFScrollView.h"
 #import "PDFContainer.h"
 
 @implementation PDFViewController
@@ -52,9 +53,9 @@
     [self tilePages];
 }
 
-- (PDFViewTiled *)dequeueRecycledPage
+- (PDFScrollView *)dequeueRecycledPage
 {
-    PDFViewTiled *page = [recycledPages anyObject];
+    PDFScrollView *page = [recycledPages anyObject];
     if (page) {
         [[page retain] autorelease];
         [recycledPages removeObject:page];
@@ -65,8 +66,8 @@
 - (BOOL)isDisplayingPageForIndex:(NSUInteger)index
 {
     BOOL foundPage = NO;
-    for (PDFViewTiled *page in visiblePages) {
-        if (page.page - 1 == index) {
+    for (PDFScrollView *page in visiblePages) {
+        if (page.index - 1 == index) {
             foundPage = YES;
             break;
         }
@@ -74,8 +75,8 @@
     return foundPage;
 }
 
-- (PDFViewTiled *)currentlyDisplayedPage {
-    for (PDFViewTiled *page in visiblePages) {
+- (PDFScrollView *)currentlyDisplayedPage {
+    for (PDFScrollView *page in visiblePages) {
         return page;
         break;
     }
@@ -121,13 +122,12 @@
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
     
     // adjust frames and configuration of each visible page
-    for (PDFViewTiled *page in visiblePages) {
-//        CGPoint restorePoint = [page pointToCenterAfterRotation];
-//        CGFloat restoreScale = [page scaleToRestoreAfterRotation];
-//        page.frame = [self frameForPageAtIndex:page.page];
-//        [page setMaxMinZoomScalesForCurrentBounds];
-//        [page restoreCenterPoint:restorePoint scale:restoreScale];
-        
+    for (PDFScrollView *page in visiblePages) {
+        CGPoint restorePoint = [page pointToCenterAfterRotation];
+        CGFloat restoreScale = [page scaleToRestoreAfterRotation];
+        page.frame = [self frameForPageAtIndex:page.index];
+        [page setMaxMinZoomScalesForCurrentBounds];
+        [page restoreCenterPoint:restorePoint scale:restoreScale];
     }
     
     // adjust contentOffset to preserve page location based on values collected prior to location
@@ -169,8 +169,8 @@
     lastNeededPageIndex  = MIN(lastNeededPageIndex, [self pageCount] - 1);
     
     // Recycle no-longer-visible pages 
-    for (PDFViewTiled *page in visiblePages) {
-        if (page.page - 1 < firstNeededPageIndex || page.page - 1 > lastNeededPageIndex) {
+    for (PDFScrollView *page in visiblePages) {
+        if (page.index - 1 < firstNeededPageIndex || page.index - 1 > lastNeededPageIndex) {
             [recycledPages addObject:page];
             [page removeFromSuperview];
         }
@@ -180,12 +180,12 @@
     // add missing pages
     for (int index = firstNeededPageIndex; index <= lastNeededPageIndex; index++) {
         if (![self isDisplayingPageForIndex:index]) {
-            PDFViewTiled *page = [self dequeueRecycledPage];
+            PDFScrollView *page = [self dequeueRecycledPage];
             if (page == nil) {
-                page = [[[PDFViewTiled alloc] initWithPage:index + 1 frame:[self frameForPageAtIndex:index]] autorelease];
+                page = [[[PDFScrollView alloc] initWithPage:index + 1 frame:[self frameForPageAtIndex:index]] autorelease];
             }
             [pagingScrollView addSubview:page];
-            [self setMaxMinZoomScalesForCurrentBounds];
+            //[self setMaxMinZoomScalesForCurrentBounds];
             [visiblePages addObject:page];
         }
     }    
@@ -222,30 +222,6 @@
 
 - (NSInteger)pageCount {
    return [[PDFContainer sharedPDF] pages];
-}
-
-
-- (void)setMaxMinZoomScalesForCurrentBounds
-{
-    CGSize boundsSize = self.pagingScrollView.bounds.size;
-    CGSize imageSize = CGSizeMake(680, 480);
-    
-    // calculate min/max zoomscale
-    CGFloat xScale = boundsSize.width / imageSize.width;    // the scale needed to perfectly fit the image width-wise
-    CGFloat yScale = boundsSize.height / imageSize.height;  // the scale needed to perfectly fit the image height-wise
-    CGFloat minScale = MIN(xScale, yScale);                 // use minimum of these to allow the image to become fully visible
-    
-    // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
-    // maximum zoom scale to 0.5.
-    CGFloat maxScale = 1.0; /// [[UIScreen mainScreen] scale];
-    
-    // don't let minScale exceed maxScale. (If the image is smaller than the screen, we don't want to force it to be zoomed.) 
-    if (minScale > maxScale) {
-        minScale = maxScale;
-    }
-    
-    self.pagingScrollView.maximumZoomScale = maxScale;
-    self.pagingScrollView.minimumZoomScale = minScale;
 }
 
 

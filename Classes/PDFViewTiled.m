@@ -71,13 +71,13 @@
         
     }
     
-    self.scrollsToTop = NO;
-    self.showsVerticalScrollIndicator = NO;
-    self.showsHorizontalScrollIndicator = NO;
-    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.minimumZoomScale = MINIMUM_ZOOM_SCALE;
-    self.maximumZoomScale = MAXIMUM_ZOOM_SCALE;
-    self.delegate = self;
+//    self.scrollsToTop = NO;
+//    self.showsVerticalScrollIndicator = NO;
+//    self.showsHorizontalScrollIndicator = NO;
+//    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+//    self.minimumZoomScale = MINIMUM_ZOOM_SCALE;
+//    self.maximumZoomScale = MAXIMUM_ZOOM_SCALE;
+//    self.delegate = self;
     
         
     return self;

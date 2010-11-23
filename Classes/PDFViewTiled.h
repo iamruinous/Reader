@@ -14,7 +14,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PDFViewTiled : UIScrollView <UIScrollViewDelegate>
+@interface PDFViewTiled : UIView
 {
 @private // Instance variables
 	CGPDFPageRef _PDFPageRef;

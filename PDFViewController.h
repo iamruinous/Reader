@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class PDFViewTiled;
+@class PDFScrollView;
 
 @interface PDFViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate> {
     UIScrollView *pagingScrollView;
@@ -30,13 +30,12 @@
 - (CGSize)contentSizeForPagingScrollView;
 
 - (void)tilePages;
-- (PDFViewTiled *)dequeueRecycledPage;
+- (PDFScrollView *)dequeueRecycledPage;
 
 - (NSInteger)pageCount;
 
-- (PDFViewTiled *)currentlyDisplayedPage;
+- (PDFScrollView *)currentlyDisplayedPage;
 
 - (void)initPDFScroll;
-- (void)setMaxMinZoomScalesForCurrentBounds;
 
 @end

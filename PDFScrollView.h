@@ -1,5 +1,5 @@
 /*
-     File: ImageScrollView.h
+     File: PDFScrollView.h
  Abstract: Centers image within the scroll view and configures image sizing and display.
   Version: 1.1
  
@@ -47,18 +47,19 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ImageScrollView : UIScrollView <UIScrollViewDelegate> {
-    UIView        *imageView;
-    NSUInteger     index;
-}
-@property (assign) NSUInteger index;
+@class PDFViewTiled;
 
-- (void)displayImage:(UIImage *)image;
-- (void)displayTiledImageNamed:(NSString *)imageName size:(CGSize)imageSize;
+@interface PDFScrollView : UIScrollView <UIScrollViewDelegate> {
+    PDFViewTiled  *pdfView;
+    NSInteger     index;
+}
+@property (assign) NSInteger index;
+
 - (void)setMaxMinZoomScalesForCurrentBounds;
 
 - (CGPoint)pointToCenterAfterRotation;
 - (CGFloat)scaleToRestoreAfterRotation;
 - (void)restoreCenterPoint:(CGPoint)oldCenter scale:(CGFloat)oldScale;
+- (void)resetZoomScale;
 
 @end

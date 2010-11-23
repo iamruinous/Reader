@@ -186,10 +186,11 @@
 
 	theSlider = [[UISlider alloc] initWithFrame:frame];
 
-	theSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	theSlider.minimumValue = 1.0f;
-	theSlider.maximumValue = [[PDFContainer sharedPDF] pages];
-	theSlider.value = [[self currentlyDisplayedPage] page];
+//	theSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+//	theSlider.minimumValue = 1.0f;
+//	theSlider.maximumValue = [[PDFContainer sharedPDF] pages];
+//    PDFScrollView *v = [self currentlyDisplayedPage];
+//	theSlider.value = [v index];
 
 	[theSlider addTarget:self action:@selector(sliderTouchDown:) forControlEvents:UIControlEventTouchDown];
 //	[theSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];

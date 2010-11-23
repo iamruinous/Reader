@@ -1,5 +1,5 @@
 /*
-     File: ImageScrollView.m
+     File: PDFScrollView.m
  Abstract: Centers image within the scroll view and configures image sizing and display.
   Version: 1.1
  
@@ -45,11 +45,21 @@
  
  */
 
-#import "ImageScrollView.h"
+#import "PDFScrollView.h"
 #import "PDFViewTiled.h"
 
-@implementation ImageScrollView
+@implementation PDFScrollView
 @synthesize index;
+
+- (id)initWithPage:(NSInteger)onPage frame:(CGRect)frame {
+    if (self = [self initWithFrame:frame]) {
+        self.index = onPage;
+        pdfView = [[PDFViewTiled alloc] initWithPage:onPage frame:frame];
+        [self addSubview:pdfView];
+
+    }
+    return self;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -59,13 +69,20 @@
         self.bouncesZoom = YES;
         self.decelerationRate = UIScrollViewDecelerationRateFast;
         self.delegate = self;        
+        [self setMaxMinZoomScalesForCurrentBounds];
+        self.contentSize = CGSizeMake(pdfView.bounds.size.width * 5, pdfView.bounds.size.height * 5);
+        self.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
 
+- (void)resetZoomScale {
+    self.zoomScale = self.minimumZoomScale;
+}
+
 - (void)dealloc
 {
-    [imageView release];
+    [pdfView release];
     [super dealloc];
 }
 
@@ -79,7 +96,7 @@
     // center the image as it becomes smaller than the size of the screen
     
     CGSize boundsSize = self.bounds.size;
-    CGRect frameToCenter = imageView.frame;
+    CGRect frameToCenter = pdfView.frame;
     
     // center horizontally
     if (frameToCenter.size.width < boundsSize.width)
@@ -93,14 +110,14 @@
     else
         frameToCenter.origin.y = 0;
     
-    imageView.frame = frameToCenter;
+    pdfView.frame = frameToCenter;
     
-    if ([imageView isKindOfClass:[PDFViewTiled class]]) {
-        // to handle the interaction between CATiledLayer and high resolution screens, we need to manually set the
-        // tiling view's contentScaleFactor to 1.0. (If we omitted this, it would be 2.0 on high resolution screens,
-        // which would cause the CATiledLayer to ask us for tiles of the wrong scales.)
-        imageView.contentScaleFactor = 1.0;
-    }
+//    if ([pdfView isKindOfClass:[PDFViewTiled class]]) {
+//        // to handle the interaction between CATiledLayer and high resolution screens, we need to manually set the
+//        // tiling view's contentScaleFactor to 1.0. (If we omitted this, it would be 2.0 on high resolution screens,
+//        // which would cause the CATiledLayer to ask us for tiles of the wrong scales.)
+//        pdfView.contentScaleFactor = 1.0;
+//    }
 }
 
 #pragma mark -
@@ -108,55 +125,28 @@
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
-    return imageView;
+    return pdfView;
 }
 
-#pragma mark -
-#pragma mark Configure scrollView to display new image (tiled or not)
-
-- (void)displayImage:(UIImage *)image
+- (void)willRotate
 {
-    // clear the previous imageView
-    [imageView removeFromSuperview];
-    [imageView release];
-    imageView = nil;
-    
-    // reset our zoomScale to 1.0 before doing any further calculations
-    self.zoomScale = 1.0;
-    
-    // make a new UIImageView for the new image
-    imageView = [[UIImageView alloc] initWithImage:image];
-    [self addSubview:imageView];
-    
-    self.contentSize = [image size];
-    [self setMaxMinZoomScalesForCurrentBounds];
-    self.zoomScale = self.minimumZoomScale;
+    [pdfView willRotate];
 }
 
-- (void)displayTiledImageNamed:(NSString *)imageName size:(CGSize)imageSize
+- (void)didRotate
 {
-    // clear the previous imageView
-    [imageView removeFromSuperview];
-    [imageView release];
-    imageView = nil;
-    
-    // reset our zoomScale to 1.0 before doing any further calculations
-    self.zoomScale = 1.0;
-    
-    // make a new TilingView for the new image
-    imageView = [[TilingView alloc] initWithImageName:imageName size:imageSize];
-    [(TilingView *)imageView setAnnotates:YES]; // ** remove this line to remove the white tile grid **
-    [self addSubview:imageView];
-    
-    self.contentSize = imageSize;
-    [self setMaxMinZoomScalesForCurrentBounds];
-    self.zoomScale = self.minimumZoomScale;
+    [pdfView didRotate];
+//    self.bounds = [self superview].bounds;
+//    self.contentSize = CGSizeMake(pdfView.bounds.size.width * 5, pdfView.bounds.size.height * 5);
+//    self.zoomScale = self.minimumZoomScale;
+
 }
+
 
 - (void)setMaxMinZoomScalesForCurrentBounds
 {
     CGSize boundsSize = self.bounds.size;
-    CGSize imageSize = imageView.bounds.size;
+    CGSize imageSize = CGSizeMake(pdfView.bounds.size.width * 5, pdfView.bounds.size.height * 5);
     
     // calculate min/max zoomscale
     CGFloat xScale = boundsSize.width / imageSize.width;    // the scale needed to perfectly fit the image width-wise
@@ -165,15 +155,18 @@
     
     // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
     // maximum zoom scale to 0.5.
-    CGFloat maxScale = 1.0 / [[UIScreen mainScreen] scale];
+    CGFloat maxScale = 5.0 / [[UIScreen mainScreen] scale];
     
     // don't let minScale exceed maxScale. (If the image is smaller than the screen, we don't want to force it to be zoomed.) 
     if (minScale > maxScale) {
         minScale = maxScale;
     }
     
-    self.maximumZoomScale = maxScale;
-    self.minimumZoomScale = minScale;
+//    if (minScale < -5)
+//        minScale = -5;
+    
+    self.maximumZoomScale = 5.0; //maxScale;
+    self.minimumZoomScale = -5.0; //minScale;
 }
 
 #pragma mark -
@@ -183,7 +176,7 @@
 - (CGPoint)pointToCenterAfterRotation
 {
     CGPoint boundsCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    return [self convertPoint:boundsCenter toView:imageView];
+    return [self convertPoint:boundsCenter toView:pdfView];
 }
 
 // returns the zoom scale to attempt to restore after rotation. 
@@ -221,7 +214,7 @@
     // Step 2: restore center point, first making sure it is within the allowable range.
     
     // 2a: convert our desired center point back to our own coordinate space
-    CGPoint boundsCenter = [self convertPoint:oldCenter fromView:imageView];
+    CGPoint boundsCenter = [self convertPoint:oldCenter fromView:pdfView];
     // 2b: calculate the content offset that would yield that center point
     CGPoint offset = CGPointMake(boundsCenter.x - self.bounds.size.width / 2.0, 
                                  boundsCenter.y - self.bounds.size.height / 2.0);
