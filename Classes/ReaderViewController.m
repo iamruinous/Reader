@@ -294,6 +294,8 @@
 #endif
 
 	//if (fromInterfaceOrientation == self.interfaceOrientation) return; // You get this when presented modally
+    
+    self.pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 
 	[[self currentlyDisplayedPage] didRotate];
 }

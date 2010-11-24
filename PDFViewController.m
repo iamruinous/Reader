@@ -43,6 +43,7 @@
     pagingScrollView.showsVerticalScrollIndicator = NO;
     pagingScrollView.showsHorizontalScrollIndicator = NO;
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
+	pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     pagingScrollView.delegate = self;
     
     [self.view addSubview:self.pagingScrollView];
@@ -114,6 +115,10 @@
         firstVisiblePageIndexBeforeRotation = 0;
         percentScrolledIntoFirstVisiblePage = offset / pageWidth;
     }    
+    
+	//self.pagingScrollView.zoomScale = NO_ZOOM_SCALE;
+    
+	[[self currentlyDisplayedPage] willRotate];    
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
@@ -135,6 +140,18 @@
     CGFloat newOffset = (firstVisiblePageIndexBeforeRotation * pageWidth) + (percentScrolledIntoFirstVisiblePage * pageWidth);
     pagingScrollView.contentOffset = CGPointMake(newOffset, 0);
 }
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+#ifdef DEBUG
+	NSLog(@"ReaderViewController.m -didRotateFromInterfaceOrientation: [%d] to [%d]", fromInterfaceOrientation, self.interfaceOrientation);
+	NSLog(@" -> self.view.bounds = %@", NSStringFromCGRect(self.view.bounds));
+#endif
+    
+	[[self currentlyDisplayedPage] didRotate];
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -184,6 +201,7 @@
             if (page == nil) {
                 page = [[[PDFScrollView alloc] initWithPage:index + 1 frame:[self frameForPageAtIndex:index]] autorelease];
             }
+            page.zoomScale = 1.0;
             [pagingScrollView addSubview:page];
             //[self setMaxMinZoomScalesForCurrentBounds];
             [visiblePages addObject:page];

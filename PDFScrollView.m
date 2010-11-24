@@ -56,7 +56,6 @@
         self.index = onPage;
         pdfView = [[PDFViewTiled alloc] initWithPage:onPage frame:frame];
         [self addSubview:pdfView];
-
     }
     return self;
 }
@@ -71,6 +70,7 @@
         self.delegate = self;        
         [self setMaxMinZoomScalesForCurrentBounds];
         self.contentSize = CGSizeMake(pdfView.bounds.size.width * 5, pdfView.bounds.size.height * 5);
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         self.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -166,7 +166,7 @@
 //        minScale = -5;
     
     self.maximumZoomScale = 5.0; //maxScale;
-    self.minimumZoomScale = -5.0; //minScale;
+    self.minimumZoomScale = 1.0; //minScale;
 }
 
 #pragma mark -

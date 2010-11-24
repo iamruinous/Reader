@@ -61,5 +61,7 @@
 - (CGFloat)scaleToRestoreAfterRotation;
 - (void)restoreCenterPoint:(CGPoint)oldCenter scale:(CGFloat)oldScale;
 - (void)resetZoomScale;
+- (void)willRotate;
+- (void)didRotate;
 
 @end

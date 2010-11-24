@@ -42,18 +42,6 @@
 
 #pragma mark PDFViewTiled Instance methods
 
-/*
-- (id)initWithFrame:(CGRect)frame
-{
-	if ((self = [super initWithFrame:frame]))
-	{
-		// ...UIView initialization code...
-	}
-
-	return self;
-}
-*/
-
 - (id)initWithPage:(NSInteger)onPage frame:(CGRect)frame {
     if (self = [self initWithFrame:frame])
     {        
@@ -71,14 +59,7 @@
         
     }
     
-//    self.scrollsToTop = NO;
-//    self.showsVerticalScrollIndicator = NO;
-//    self.showsHorizontalScrollIndicator = NO;
-//    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-//    self.minimumZoomScale = MINIMUM_ZOOM_SCALE;
-//    self.maximumZoomScale = MAXIMUM_ZOOM_SCALE;
-//    self.delegate = self;
-    
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
     return self;
 }
