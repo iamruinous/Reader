@@ -72,7 +72,7 @@
 }
 
 - (void)didRotate
-{
+{    
 	[self.layer setNeedsDisplay];
 
 	self.layer.hidden = NO;

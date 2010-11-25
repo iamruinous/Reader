@@ -15,6 +15,13 @@
 
 @synthesize pagingScrollView;
 
+#define ZOOM_AMOUNT 0.25f
+#define NO_ZOOM_SCALE 1.0f
+#define MINIMUM_ZOOM_SCALE 1.0f
+#define MAXIMUM_ZOOM_SCALE 5.0f
+
+#define NAV_AREA_SIZE 48.0f
+
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -43,7 +50,7 @@
     pagingScrollView.showsVerticalScrollIndicator = NO;
     pagingScrollView.showsHorizontalScrollIndicator = NO;
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
-	pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     pagingScrollView.delegate = self;
     
     [self.view addSubview:self.pagingScrollView];
@@ -105,18 +112,18 @@
 {
     // here, our pagingScrollView bounds have not yet been updated for the new interface orientation. So this is a good
     // place to calculate the content offset that we will need in the new orientation
-    CGFloat offset = pagingScrollView.contentOffset.x;
-    CGFloat pageWidth = pagingScrollView.bounds.size.width;
+//    CGFloat offset = pagingScrollView.contentOffset.x;
+//    CGFloat pageWidth = pagingScrollView.bounds.size.width;
+//    
+//    if (offset >= 0) {
+//        firstVisiblePageIndexBeforeRotation = floorf(offset / pageWidth);
+//        percentScrolledIntoFirstVisiblePage = (offset - (firstVisiblePageIndexBeforeRotation * pageWidth)) / pageWidth;
+//    } else {
+//        firstVisiblePageIndexBeforeRotation = 0;
+//        percentScrolledIntoFirstVisiblePage = offset / pageWidth;
+//    }    
     
-    if (offset >= 0) {
-        firstVisiblePageIndexBeforeRotation = floorf(offset / pageWidth);
-        percentScrolledIntoFirstVisiblePage = (offset - (firstVisiblePageIndexBeforeRotation * pageWidth)) / pageWidth;
-    } else {
-        firstVisiblePageIndexBeforeRotation = 0;
-        percentScrolledIntoFirstVisiblePage = offset / pageWidth;
-    }    
-    
-	//self.pagingScrollView.zoomScale = NO_ZOOM_SCALE;
+	self.pagingScrollView.zoomScale = NO_ZOOM_SCALE;
     
 	[[self currentlyDisplayedPage] willRotate];    
 }
@@ -126,19 +133,24 @@
     // recalculate contentSize based on current orientation
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
     
-    // adjust frames and configuration of each visible page
+//    // adjust frames and configuration of each visible page
     for (PDFScrollView *page in visiblePages) {
-        CGPoint restorePoint = [page pointToCenterAfterRotation];
-        CGFloat restoreScale = [page scaleToRestoreAfterRotation];
-        page.frame = [self frameForPageAtIndex:page.index];
-        [page setMaxMinZoomScalesForCurrentBounds];
-        [page restoreCenterPoint:restorePoint scale:restoreScale];
+//        CGPoint restorePoint = [page pointToCenterAfterRotation];
+//        CGFloat restoreScale = [page scaleToRestoreAfterRotation];
+        page.frame = [self frameForPageAtIndex:page.index - 1];
+//        page.zoomScale = 1.0;
+//        [page restoreCenterPoint:restorePoint scale:restoreScale];
     }
-    
-    // adjust contentOffset to preserve page location based on values collected prior to location
-    CGFloat pageWidth = pagingScrollView.bounds.size.width;
-    CGFloat newOffset = (firstVisiblePageIndexBeforeRotation * pageWidth) + (percentScrolledIntoFirstVisiblePage * pageWidth);
-    pagingScrollView.contentOffset = CGPointMake(newOffset, 0);
+
+    for (PDFScrollView *page in recycledPages) {
+        page.frame = [self frameForPageAtIndex:page.index - 1];
+    }
+
+    //    
+//    // adjust contentOffset to preserve page location based on values collected prior to location
+//    CGFloat pageWidth = pagingScrollView.bounds.size.width;
+//    CGFloat newOffset = (firstVisiblePageIndexBeforeRotation * pageWidth) + (percentScrolledIntoFirstVisiblePage * pageWidth);
+//    pagingScrollView.contentOffset = CGPointMake(newOffset, 0);
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -147,6 +159,8 @@
 	NSLog(@"ReaderViewController.m -didRotateFromInterfaceOrientation: [%d] to [%d]", fromInterfaceOrientation, self.interfaceOrientation);
 	NSLog(@" -> self.view.bounds = %@", NSStringFromCGRect(self.view.bounds));
 #endif
+    // recalculate contentSize based on current orientation
+    pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
     
 	[[self currentlyDisplayedPage] didRotate];
 }

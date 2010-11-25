@@ -26,6 +26,7 @@
 
 #pragma mark Constants
 
+
 #define ZOOM_AMOUNT 0.25f
 #define NO_ZOOM_SCALE 1.0f
 #define MINIMUM_ZOOM_SCALE 1.0f
@@ -177,27 +178,6 @@
 	theNavbar.hidden = YES; theNavbar.alpha = 0.0f;
 
 	[self.view addSubview:theNavbar];
-
-	navbarFader = [[UIViewFader alloc] initWithView:theNavbar];
-
-	frame = theNavbar.bounds;
-	frame.origin.y += 4.0f; frame.size.height -= 8.0f;
-	frame.origin.x += 6.0f; frame.size.width -= 12.0f;
-
-	theSlider = [[UISlider alloc] initWithFrame:frame];
-
-//	theSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-//	theSlider.minimumValue = 1.0f;
-//	theSlider.maximumValue = [[PDFContainer sharedPDF] pages];
-//    PDFScrollView *v = [self currentlyDisplayedPage];
-//	theSlider.value = [v index];
-
-	[theSlider addTarget:self action:@selector(sliderTouchDown:) forControlEvents:UIControlEventTouchDown];
-//	[theSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-	[theSlider addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-
-	[theNavbar addSubview:theSlider];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -272,10 +252,8 @@
 	NSLog(@"ReaderViewController.m -willRotateToInterfaceOrientation: [%d]", toInterfaceOrientation);
 	NSLog(@" -> self.view.bounds = %@", NSStringFromCGRect(self.view.bounds));
 #endif
-
-	self.pagingScrollView.zoomScale = NO_ZOOM_SCALE;
-
-	[[self currentlyDisplayedPage] willRotate];
+    
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
@@ -284,6 +262,8 @@
 	NSLog(@"ReaderViewController.m -willAnimateRotationToInterfaceOrientation: [%d]", interfaceOrientation);
 	NSLog(@" -> self.view.bounds = %@", NSStringFromCGRect(self.view.bounds));
 #endif
+    [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
+
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -295,9 +275,7 @@
 
 	//if (fromInterfaceOrientation == self.interfaceOrientation) return; // You get this when presented modally
     
-    self.pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
-
-	[[self currentlyDisplayedPage] didRotate];
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 - (void)didReceiveMemoryWarning

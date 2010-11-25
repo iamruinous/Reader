@@ -70,7 +70,7 @@
         self.delegate = self;        
         [self setMaxMinZoomScalesForCurrentBounds];
         self.contentSize = CGSizeMake(pdfView.bounds.size.width * 5, pdfView.bounds.size.height * 5);
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.backgroundColor = [UIColor whiteColor];
     }
     return self;
