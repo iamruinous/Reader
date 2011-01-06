@@ -9,41 +9,18 @@
 #import "PDFContainer.h"
 #import "CGPDFDocument.h"
 
+
+// Updated singleton based on
+// rev. 3 at http://stackoverflow.com/questions/145154/what-does-your-objective-c-singleton-look-like/145403#145403
+
 static PDFContainer *sharedPDF = nil;
 
 @implementation PDFContainer
 
-#pragma mark -
-#pragma mark class instance methods
-
 @synthesize pages;
 
-//static PDFContainer *sharedPDF;
-//
-//+(PDFContainer *)sharedPDF {
-//	@synchronized(self){
-//		if(!sharedPDF){
-//			[[PDFContainer alloc] init];
-//		}
-//	}
-//	return sharedPDF;
-//}
-//
-//+(id) alloc {
-//	@synchronized(self) {
-//		NSAssert(sharedPDF == nil, @"Attempt to allocate second instance");
-//		sharedPDF = [super alloc];
-//	}
-//	return sharedPDF;
-//}
-//
-//- (void)dealloc {
-//    CGPDFDocumentRelease(_PDFDocRef);
-//    [_fileURL release];
-//    [_password release];
-//    
-//    [super dealloc];
-//}
+#pragma mark -
+#pragma mark class instance methods
 
 - (BOOL)changeFileURL:(NSURL *)fileURL password:(NSString *)password
 {
