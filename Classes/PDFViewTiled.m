@@ -135,9 +135,6 @@
 		drawPDFPageRef = CGPDFPageRetain(_PDFPageRef);
 	}
 
-	CGContextSetRGBFillColor(context, 1.0f, 1.0f, 1.0f, 1.0f);
-	CGContextFillRect(context, CGContextGetClipBoundingBox(context));
-
 	if (drawPDFPageRef != NULL) // Render the page into the context
 	{
 		CGFloat boundsHeight = self.bounds.size.height;
