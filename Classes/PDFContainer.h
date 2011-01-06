@@ -15,10 +15,10 @@
 	CGPDFDocumentRef _PDFDocRef;
 }
 
-@property (nonatomic, readonly) NSInteger pages;
+@property (nonatomic, readonly) size_t pages;
 
 - (BOOL)changeFileURL:(NSURL *)fileURL password:(NSString *)password;
 + (id)sharedPDF;
-- (CGPDFPageRef)getPage:(NSInteger)pageNumber;
+- (CGPDFPageRef)getPage:(size_t)pageNumber;
 
 @end

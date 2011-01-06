@@ -73,7 +73,7 @@
 
 	CGRect frame = CGRectZero;
 	UITapGestureRecognizer *tapGesture = nil;
-	UISwipeGestureRecognizer *swipeGesture = nil;
+//	UISwipeGestureRecognizer *swipeGesture = nil;
 
 //	tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouchesOne:)];
 //	tapGesture.cancelsTouchesInView = NO; tapGesture.delaysTouchesEnded = NO;
@@ -113,13 +113,14 @@
 //	[self.view addGestureRecognizer:swipeGesture];
 //	[swipeGesture release];
 
-	NSInteger page = 1; NSURL *fileURL = openURL;
+//	NSInteger page = 1;
+	NSURL *fileURL = openURL;
 
 	if (fileURL == nil) // Open the bundled PDF if a file URL to an 'Open In...' PDF was not provided
 	{
 		fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Document.pdf" ofType:nil]];
 
-		page = [[NSUserDefaults standardUserDefaults] integerForKey:@"OnPage"];
+		//page = [[NSUserDefaults standardUserDefaults] integerForKey:@"OnPage"];
 	}
 
     [[PDFContainer sharedPDF] changeFileURL:fileURL password:nil];

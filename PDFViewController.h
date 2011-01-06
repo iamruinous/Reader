@@ -17,22 +17,22 @@
     NSMutableSet *visiblePages;
     
     // these values are stored off before we start rotation so we adjust our content offset appropriately during rotation
-    int           firstVisiblePageIndexBeforeRotation;
+    size_t        firstVisiblePageIndexBeforeRotation;
     CGFloat       percentScrolledIntoFirstVisiblePage;
 }
 
 @property (nonatomic, retain) UIScrollView *pagingScrollView;
 
-- (BOOL)isDisplayingPageForIndex:(NSUInteger)index;
+- (BOOL)isDisplayingPageForIndex:(size_t)index;
 
 - (CGRect)frameForPagingScrollView;
-- (CGRect)frameForPageAtIndex:(NSUInteger)index;
+- (CGRect)frameForPageAtIndex:(size_t)index;
 - (CGSize)contentSizeForPagingScrollView;
 
 - (void)tilePages;
 - (PDFScrollView *)dequeueRecycledPage;
 
-- (NSInteger)pageCount;
+- (size_t)pageCount;
 
 - (PDFScrollView *)currentlyDisplayedPage;
 

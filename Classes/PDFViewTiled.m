@@ -42,9 +42,45 @@
 
 #pragma mark PDFViewTiled Instance methods
 
-- (id)initWithPage:(NSInteger)onPage frame:(CGRect)frame {
+- (void)willRecycle {
+	self.layer.hidden = YES;
+	self.layer.contents = nil;
+}
+
+- (void)recycleForPage:(size_t)onPage frame:(CGRect)frame {
+#ifdef DEBUG
+	NSLog(@"PDFViewTiled recycleWithPage: %u", onPage);
+#endif
+	
+	self.layer.hidden = NO;
+	page = onPage;
+	[self setFrame:frame];
+	
+	if (_PDFPageRef == NULL) // Check for NULL CGPDFPageRef
+	{
+		CGPDFPageRelease(_PDFPageRef); // Release the PDF page
+	}
+	
+	_PDFPageRef = [[PDFContainer sharedPDF] getPage:onPage];
+	
+	if (_PDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
+	{
+		CGPDFPageRetain(_PDFPageRef); // Retain the PDF page
+	}
+	else // Error out with a diagnostic
+	{
+		NSAssert(NO, @"CGPDFPageRef == NULL");
+	}
+	[self.layer setNeedsDisplay];
+}
+
+- (id)initWithPage:(size_t)onPage frame:(CGRect)frame {
+#ifdef DEBUG
+	NSLog(@"PDFViewTiled initWithPage: %u", onPage);
+#endif
     if (self = [self initWithFrame:frame])
-    {        
+    {
+		
         page = onPage;
         _PDFPageRef = [[PDFContainer sharedPDF] getPage:onPage];
 
@@ -90,7 +126,10 @@
 - (void)drawLayer:(CATiledLayer *)layer inContext:(CGContextRef)context
 {
 	CGPDFPageRef drawPDFPageRef = NULL;
-
+	
+	CGContextSetRGBFillColor(context, 1.0f, 1.0f, 1.0f, 1.0f);
+	CGContextFillRect(context, CGContextGetClipBoundingBox(context));
+	
 	@synchronized(self) // Briefly block main thread
 	{
 		drawPDFPageRef = CGPDFPageRetain(_PDFPageRef);

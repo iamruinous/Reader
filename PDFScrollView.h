@@ -51,10 +51,11 @@
 
 @interface PDFScrollView : UIScrollView <UIScrollViewDelegate> {
     PDFViewTiled  *pdfView;
-    NSInteger     index;
+    size_t     index;
 }
-@property (assign) NSInteger index;
+@property (assign) size_t index;
 
+- (void)recycleForPage:(size_t)onPage frame:(CGRect)frame;
 - (void)setMaxMinZoomScalesForCurrentBounds;
 
 - (CGPoint)pointToCenterAfterRotation;
@@ -63,5 +64,6 @@
 - (void)resetZoomScale;
 - (void)willRotate;
 - (void)didRotate;
+- (void)willRecycle;
 
 @end

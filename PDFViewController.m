@@ -46,7 +46,7 @@
     CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
     pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
     pagingScrollView.pagingEnabled = YES;
-    pagingScrollView.backgroundColor = [UIColor blackColor];
+    pagingScrollView.backgroundColor = [UIColor grayColor];
     pagingScrollView.showsVerticalScrollIndicator = NO;
     pagingScrollView.showsHorizontalScrollIndicator = NO;
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
@@ -71,7 +71,7 @@
     return page;
 }
 
-- (BOOL)isDisplayingPageForIndex:(NSUInteger)index
+- (BOOL)isDisplayingPageForIndex:(size_t)index
 {
     BOOL foundPage = NO;
     for (PDFScrollView *page in visiblePages) {
@@ -194,14 +194,18 @@
 {
     // Calculate which pages are visible
     CGRect visibleBounds = pagingScrollView.bounds;
-    int firstNeededPageIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
-    int lastNeededPageIndex  = floorf((CGRectGetMaxX(visibleBounds)-1) / CGRectGetWidth(visibleBounds));
+    size_t firstNeededPageIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
+    size_t lastNeededPageIndex  = floorf((CGRectGetMaxX(visibleBounds)-1) / CGRectGetWidth(visibleBounds));
     firstNeededPageIndex = MAX(firstNeededPageIndex, 0);
     lastNeededPageIndex  = MIN(lastNeededPageIndex, [self pageCount] - 1);
     
     // Recycle no-longer-visible pages 
     for (PDFScrollView *page in visiblePages) {
         if (page.index - 1 < firstNeededPageIndex || page.index - 1 > lastNeededPageIndex) {
+#ifdef DEBUG
+			NSLog(@"firstNeededPageIndex: %u, lastNeededPageIndex: %u, recycling: %u", firstNeededPageIndex, lastNeededPageIndex, page.index-1);
+#endif
+			[page willRecycle];
             [recycledPages addObject:page];
             [page removeFromSuperview];
         }
@@ -209,12 +213,16 @@
     [visiblePages minusSet:recycledPages];
     
     // add missing pages
-    for (int index = firstNeededPageIndex; index <= lastNeededPageIndex; index++) {
+    for (size_t index = firstNeededPageIndex; index <= lastNeededPageIndex; index++) {
         if (![self isDisplayingPageForIndex:index]) {
             PDFScrollView *page = [self dequeueRecycledPage];
             if (page == nil) {
                 page = [[[PDFScrollView alloc] initWithPage:index + 1 frame:[self frameForPageAtIndex:index]] autorelease];
-            }
+            } else {
+				// We've a recycled page, so lets point it at page index+1 and update its frame ...
+				[page recycleForPage:index + 1 frame:[self frameForPageAtIndex:index]];
+			}
+
             page.zoomScale = 1.0;
             [pagingScrollView addSubview:page];
             //[self setMaxMinZoomScalesForCurrentBounds];
@@ -234,11 +242,14 @@
     return frame;
 }
 
-- (CGRect)frameForPageAtIndex:(NSUInteger)index {
+- (CGRect)frameForPageAtIndex:(size_t)index {
     // We have to use our paging scroll view's bounds, not frame, to calculate the page placement. When the device is in
     // landscape orientation, the frame will still be in portrait because the pagingScrollView is the root view controller's
     // view, so its frame is in window coordinate space, which is never rotated. Its bounds, however, will be in landscape
     // because it has a rotation transform applied.
+#ifdef DEBUG
+	NSLog(@"frameForPageAtIndex: %u", index);
+#endif
     CGRect bounds = pagingScrollView.bounds;
     CGRect pageFrame = bounds;
     pageFrame.size.width -= (2 * PADDING);
@@ -252,7 +263,7 @@
     return CGSizeMake(bounds.size.width * [self pageCount], bounds.size.height);
 }
 
-- (NSInteger)pageCount {
+- (size_t)pageCount {
    return [[PDFContainer sharedPDF] pages];
 }
 
