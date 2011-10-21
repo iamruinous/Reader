@@ -42,7 +42,7 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)initPDFScroll {
-    
+
     CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
     pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
     pagingScrollView.pagingEnabled = YES;
@@ -52,9 +52,9 @@
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
     pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     pagingScrollView.delegate = self;
-    
+
     [self.view addSubview:self.pagingScrollView];
-    
+
     // Step 2: prepare to tile content
     recycledPages = [[NSMutableSet alloc] init];
     visiblePages  = [[NSMutableSet alloc] init];
@@ -103,7 +103,7 @@
 #pragma mark -
 #pragma mark View controller rotation methods
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     return YES;
 }
@@ -114,25 +114,25 @@
     // place to calculate the content offset that we will need in the new orientation
 //    CGFloat offset = pagingScrollView.contentOffset.x;
 //    CGFloat pageWidth = pagingScrollView.bounds.size.width;
-//    
+//
 //    if (offset >= 0) {
 //        firstVisiblePageIndexBeforeRotation = floorf(offset / pageWidth);
 //        percentScrolledIntoFirstVisiblePage = (offset - (firstVisiblePageIndexBeforeRotation * pageWidth)) / pageWidth;
 //    } else {
 //        firstVisiblePageIndexBeforeRotation = 0;
 //        percentScrolledIntoFirstVisiblePage = offset / pageWidth;
-//    }    
-    
+//    }
+
 	self.pagingScrollView.zoomScale = NO_ZOOM_SCALE;
-    
-	[[self currentlyDisplayedPage] willRotate];    
+
+	[[self currentlyDisplayedPage] willRotate];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     // recalculate contentSize based on current orientation
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
-    
+
 //    // adjust frames and configuration of each visible page
     for (PDFScrollView *page in visiblePages) {
 //        CGPoint restorePoint = [page pointToCenterAfterRotation];
@@ -146,7 +146,7 @@
         page.frame = [self frameForPageAtIndex:page.index - 1];
     }
 
-    //    
+    //
 //    // adjust contentOffset to preserve page location based on values collected prior to location
 //    CGFloat pageWidth = pagingScrollView.bounds.size.width;
 //    CGFloat newOffset = (firstVisiblePageIndexBeforeRotation * pageWidth) + (percentScrolledIntoFirstVisiblePage * pageWidth);
@@ -161,7 +161,7 @@
 #endif
     // recalculate contentSize based on current orientation
     pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
-    
+
 	[[self currentlyDisplayedPage] didRotate];
 }
 
@@ -170,7 +170,7 @@
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc. that aren't in use.
 }
 
@@ -190,7 +190,7 @@
 #pragma mark -
 #pragma mark Tiling and page configuration
 
-- (void)tilePages 
+- (void)tilePages
 {
     // Calculate which pages are visible
     CGRect visibleBounds = pagingScrollView.bounds;
@@ -198,8 +198,8 @@
     int lastNeededPageIndex  = floorf((CGRectGetMaxX(visibleBounds)-1) / CGRectGetWidth(visibleBounds));
     firstNeededPageIndex = MAX(firstNeededPageIndex, 0);
     lastNeededPageIndex  = MIN(lastNeededPageIndex, [self pageCount] - 1);
-    
-    // Recycle no-longer-visible pages 
+
+    // Recycle no-longer-visible pages
     for (PDFScrollView *page in visiblePages) {
         if (page.index - 1 < firstNeededPageIndex || page.index - 1 > lastNeededPageIndex) {
             [recycledPages addObject:page];
@@ -207,7 +207,7 @@
         }
     }
     [visiblePages minusSet:recycledPages];
-    
+
     // add missing pages
     for (int index = firstNeededPageIndex; index <= lastNeededPageIndex; index++) {
         if (![self isDisplayingPageForIndex:index]) {
@@ -220,7 +220,7 @@
             //[self setMaxMinZoomScalesForCurrentBounds];
             [visiblePages addObject:page];
         }
-    }    
+    }
 }
 
 #pragma mark -

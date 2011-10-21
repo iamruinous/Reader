@@ -36,29 +36,29 @@ static PDFContainer *sharedPDF;
     CGPDFDocumentRelease(_PDFDocRef);
     [_fileURL release];
     [_password release];
-    
+
     [super dealloc];
 }
 
 - (BOOL)changeFileURL:(NSURL *)fileURL password:(NSString *)password
 {
 	BOOL status = NO;
-    
+
 	if (fileURL != nil) // Check for non-nil file URL
-	{        
+	{
         if (_fileURL)
-            [_fileURL release]; 
-        
+            [_fileURL release];
+
         if (_password)
-            [_password release]; 
-        
+            [_password release];
+
         _fileURL = [fileURL copy]; // Keep a copy
         _password = [password copy]; // Ditto
 
         CGPDFDocumentRelease(_PDFDocRef);
-        
+
 		_PDFDocRef = CGPDFDocumentCreateX((CFURLRef)fileURL, password);
-        
+
 		if (_PDFDocRef != NULL) // Check for non-NULL CGPDFDocRef
 		{
 			pages = CGPDFDocumentGetNumberOfPages(_PDFDocRef); // Set the total page count
@@ -72,7 +72,7 @@ static PDFContainer *sharedPDF;
 	{
 		NSAssert(NO, @"fileURL == nil");
 	}
-    
+
 	return status;
 }
 
@@ -81,7 +81,7 @@ static PDFContainer *sharedPDF;
     if (pageNumber > pages) pageNumber = pages; // Check the upper page bounds
 
     CGPDFPageRef newPDFPageRef = CGPDFDocumentGetPage(_PDFDocRef, pageNumber);
-    
+
     if (newPDFPageRef == NULL) // Check for non-NULL CGPDFPageRef
     {
         NSAssert(NO, @"CGPDFPageRef == NULL");
