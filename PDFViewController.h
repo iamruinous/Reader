@@ -15,7 +15,7 @@
 
     NSMutableSet *recycledPages;
     NSMutableSet *visiblePages;
-    
+
     // these values are stored off before we start rotation so we adjust our content offset appropriately during rotation
     int           firstVisiblePageIndexBeforeRotation;
     CGFloat       percentScrolledIntoFirstVisiblePage;

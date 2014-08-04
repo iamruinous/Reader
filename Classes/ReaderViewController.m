@@ -125,7 +125,7 @@
     [[PDFContainer sharedPDF] changeFileURL:fileURL password:nil];
 
     [self initPDFScroll];
-    
+
 	theToolbar = [UIToolbar new]; // Create the application toolbar
 
 	theToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -252,7 +252,7 @@
 	NSLog(@"ReaderViewController.m -willRotateToInterfaceOrientation: [%d]", toInterfaceOrientation);
 	NSLog(@" -> self.view.bounds = %@", NSStringFromCGRect(self.view.bounds));
 #endif
-    
+
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
@@ -274,7 +274,7 @@
 #endif
 
 	//if (fromInterfaceOrientation == self.interfaceOrientation) return; // You get this when presented modally
-    
+
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 

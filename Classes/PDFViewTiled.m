@@ -44,7 +44,7 @@
 
 - (id)initWithPage:(NSInteger)onPage frame:(CGRect)frame {
     if (self = [self initWithFrame:frame])
-    {        
+    {
         page = onPage;
         _PDFPageRef = [[PDFContainer sharedPDF] getPage:onPage];
 
@@ -56,11 +56,11 @@
         {
             NSAssert(NO, @"CGPDFPageRef == NULL");
         }
-        
+
     }
-    
+
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        
+
     return self;
 }
 
@@ -72,7 +72,7 @@
 }
 
 - (void)didRotate
-{    
+{
 	[self.layer setNeedsDisplay];
 
 	self.layer.hidden = NO;
