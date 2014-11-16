@@ -20,11 +20,13 @@
 	CGPDFPageRef _PDFPageRef;
 }
 
-@property (nonatomic, assign) NSInteger page;
+@property (nonatomic, assign) size_t page;
 
-- (id)initWithPage:(NSInteger)onPage frame:(CGRect)frame;
+- (id)initWithPage:(size_t)onPage frame:(CGRect)frame;
+- (void)recycleForPage:(size_t)onPage frame:(CGRect)frame;
 
 - (void)willRotate;
 - (void)didRotate;
+- (void)willRecycle;
 
 @end
